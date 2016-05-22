@@ -23,6 +23,7 @@
         var defaultOptions = pickADate.getOptions() || {};
         var userOptions = model.pickADateOptions(scope) || {};
         var options = angular.extend({}, defaultOptions, userOptions);
+        var useMoment = false;
 
         options.onSet = function (e) {
           var that = this,
@@ -38,9 +39,18 @@
               var date = model.pickADate(scope);
               if (!date) {
                 date = new Date(0);
-                model.pickADate.assign(scope, date);
+                model.pickADate.assign(scope, useMoment ? moment(date) : date);
               }
-              date.setFullYear(select.obj.getFullYear(), select.obj.getMonth(), select.obj.getDate());
+
+              if(useMoment){
+                date.set({
+                  'year': select.obj.getFullYear(),
+                  'month':  select.obj.getMonth(),
+                  'date': select.obj.getDate()
+                });
+              } else {
+                date.setFullYear(select.obj.getFullYear(), select.obj.getMonth(), select.obj.getDate());
+              }
             } else {
               model.pickADate.assign(scope, select);
             }
@@ -87,10 +97,13 @@
 
         element.pickadate(options);
         function updateValue(newValue) {
+          useMoment = moment && newValue instanceof moment ? true : false;
+
           if (newValue) {
             var date = (newValue instanceof Date) ? newValue : new Date(newValue);
             element.pickadate('picker').set('select', date.getTime());
-            model.pickADate.assign(scope, date);
+
+            model.pickADate.assign(scope, useMoment ? moment(date) : date);
           } else {
             element.pickadate('picker').clear();
             model.pickADate.assign(scope, null);
@@ -152,6 +165,7 @@
         var defaultOptions = pickATime.getOptions() || {};
         var userOptions = model.pickATimeOptions(scope) || {};
         var options = angular.extend({}, defaultOptions, userOptions);
+        var useMoment = false;
 
         options.onSet = function (e) {
           var that = this,
@@ -167,12 +181,22 @@
               var date = model.pickATime(scope);
               if (!date) {
                 date = new Date(0);
-                model.pickATime.assign(scope, date);
+                model.pickATime.assign(scope, useMoment ? moment(date) : date);
               }
-              date.setHours(select.hour);
-              date.setMinutes(select.mins);
-              date.setSeconds(0);
-              date.setMilliseconds(0);
+
+              if(useMoment){
+                date.set({
+                  'hour': select.hour,
+                  'minute': select.mins,
+                  'seconds': 0,
+                  'millisecond': 0
+                });
+              } else {
+                date.setHours(select.hour);
+                date.setMinutes(select.mins);
+                date.setSeconds(0);
+                date.setMilliseconds(0);
+              }
             } else {
               model.pickATime.assign(scope, select);
             }
@@ -219,11 +243,12 @@
 
         element.pickatime(options);
         function updateValue(newValue) {
+          useMoment = moment && newValue instanceof moment ? true : false;
           if (newValue) {
             var date = (newValue instanceof Date) ? newValue : new Date(newValue);
             var totalMins = date.getHours() * 60 + date.getMinutes();
             element.pickatime('picker').set('select', totalMins);
-            model.pickATime.assign(scope, date);
+            model.pickATime.assign(scope, useMoment ? moment(date): date);
           } else {
             element.pickatime('picker').clear();
             model.pickATime.assign(scope, null);
