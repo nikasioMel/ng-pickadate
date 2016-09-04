@@ -137,7 +137,9 @@
 
         function updateOptions(newValue) {
           if (typeof newValue === "object") {
-            element.pickadate('picker').set(newValue)
+            var opts = angular.extend({}, newValue);
+            delete opts.clear;
+            element.pickadate('picker').set(opts)
           }
         }
 
