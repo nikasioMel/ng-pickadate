@@ -267,7 +267,7 @@
 
         function updateOptions(newValue) {
           if (typeof newValue === "object") {
-            element.pickatime('picker').set(newValue)
+            element.pickatime(newValue);
           }
         }
 
