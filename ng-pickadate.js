@@ -80,7 +80,7 @@
           }
 
           // FIX Chrome 73 focus error
-          setTimeout(() => {
+          setTimeout(function() {
             if(!$('#' + element.attr('id') + '_root').hasClass('picker--opened')){
                 element.click();
             }
