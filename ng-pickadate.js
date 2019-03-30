@@ -78,6 +78,13 @@
           if (defaultOptions && defaultOptions.onOpen) {
             defaultOptions.onOpen.apply(this, arguments);
           }
+
+          // FIX Chrome 73 focus error
+          setTimeout(() => {
+            if(!$('#' + element.attr('id') + '_root').hasClass('picker--opened')){
+                element.click();
+            }
+          }, 100);
         };
 
         options.onClose = function () {
